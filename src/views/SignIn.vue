@@ -143,18 +143,19 @@
 
 <script>
 import axios from "axios";
+import CryptoJS from "crypto-js";
 
 export default {
-  data: () => ({
-    step: 1,
-    return: {
+  data() {
+    return {
+      step: 1,
       email: "",
       name: "",
       password: "",
       password2: "",
       edit: true
-    }
-  }),
+    };
+  },
 
   computed: {
     currentTitle() {
@@ -168,25 +169,21 @@ export default {
   },
 
   methods: {
-    /*no sé hacerlo funcionar :C*/
-
     submit() {
-      axios
-        .get(
-          "http://54.80.18.229:8123/api/Usuarios/getByEmailAndPassword",
-          {
-            params: {
-              email: this.email,
-              password: this.password
-            }
-          },
-          {
-            auth: {
-              username: "PF2020",
-              password: "PF2020APIv1"
-            }
-          }
-        )
+      const passwordHashed = CryptoJS.MD5(this.password)
+        .toString()
+        .toUpperCase();
+      const headersDatos = {
+        Authorization: "Basic UEYyMDIwOlBGMjAyMEFQSXYx",
+        email: this.email,
+        hashedPassword: passwordHashed
+      };
+
+      axios({
+        method: "GET",
+        headers: headersDatos,
+        url: "http://54.80.18.229:8123/api/Usuarios/GetByEmailAndPassword"
+      })
         .then((response) => {
           console.log(response);
         })
@@ -197,16 +194,26 @@ export default {
     },
 
     submitForm() {
-      axios
-        .post("http://54.80.18.229:8123/api/Usuarios/Registrar", {
-          email: this.email,
-          name: this.name,
-          password: this.password,
-          edit: this.edit
-        })
+      const passwordHashed = CryptoJS.MD5(this.password)
+        .toString()
+        .toUpperCase();
+      const headersDatos = {
+        Authorization: "Basic UEYyMDIwOlBGMjAyMEFQSXYx",
+        email: this.email,
+        hashedPassword: passwordHashed,
+        nombre: this.name,
+        puedeEditar: this.edit
+      };
+
+      axios({
+        method: "POST",
+        headers: headersDatos,
+        url: "http://54.80.18.229:8123/api/Usuarios/Registrar"
+      })
         .then((response) => {
           console.log(response);
         })
+
         .catch((error) => {
           console.log(error);
         });
