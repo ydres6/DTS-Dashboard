@@ -19,6 +19,9 @@
               {{ item.NombreConductor }} {{ calculate(item.Alarmas) }}
             </v-card-title>
             <v-card-subtitle class="font-weight-bold"
+              >{{item.Email}} 
+            </v-card-subtitle>
+            <v-card-subtitle class="font-weight-bold"
               >Conduce :
             </v-card-subtitle>
 
